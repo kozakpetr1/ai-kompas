@@ -130,6 +130,9 @@
 
   /* ============ BASE ============ */
   * { box-sizing: border-box; }
+  /* Nutné explicitně, jinak .tool-card{display:flex} přebije prohlížečovo
+     výchozí [hidden]{display:none} a filtr nic neskryje mimo claude.ai náhled. */
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; scroll-padding-top: calc(var(--topbar-h) + 14px); }
   body {
     margin: 0;
