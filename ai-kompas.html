@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Kompas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    color-scheme: light;
+
+    /* podzimní akcenty – stejné v obou režimech */
+    --amber-1: #e8a94a;
+    --amber-2: #f4c873;
+    --rust-1: #c1542e;
+    --rust-2: #e2703a;
+    --moss-1: #7c8c4a;
+    --moss-2: #9db35c;
+    --maroon: #7a3428;
+
+    /* světlý režim (výchozí) */
+    --bg-top: #fdf8f0;
+    --bg-bottom: #f6e6c8;
+    --panel-bg: #ffffffa3;
+    --panel-bg-solid: #fffaf0;
+    --border-hover: #a8431f40;
+    --text: #241a12;
+    --muted: #241a12b3;
+    --accent: #a8431f;
+    --accent-soft: #c1542e;
+
+    --success: #5f6f34;
+    --info: #3f6b6b;
+    --warning: #b34f1e;
+    --danger: #8f2415;
+
+    --success-bg: rgba(124,140,74,0.14); --success-border: rgba(124,140,74,0.4);
+    --info-bg: rgba(63,107,107,0.12); --info-border: rgba(63,107,107,0.35);
+    --warning-bg: rgba(217,98,43,0.14); --warning-border: rgba(217,98,43,0.4);
+    --danger-bg: rgba(143,36,21,0.1); --danger-border: rgba(143,36,21,0.32);
+
+    --button-primary-bg: #7a3f1e;
+    --button-primary-hover-bg: #9a4f26;
+    --button-secondary-bg: #24140a0f;
+    --button-secondary-border: #a8431f40;
+
+    --code-bg: #1b120e;
+    --code-panel-bg: #1b120eeb;
+    --code-text: #f4c873;
+    --code-comment: #b89a76;
+    --code-string: #b6d17f;
+    --code-keyword: #f0885a;
+    --code-border: #e8a94a4d;
+
+    --font-ui: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-full: 9999px;
+    --topbar-h: 64px;
+    --shadow: 0 8px 28px rgba(90,60,30,0.12);
+  }
+
+  /* tmavý režim podle systému, dokud uživatel výslovně nezvolí světlý */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg-top: #1b120e; --bg-bottom: #3a2216;
+      --panel-bg: #140d0973; --panel-bg-solid: #1f150f;
+      --border-hover: #e8a94a40;
+      --text: #f5ece0; --muted: #f5ece08c;
+      --accent: #e8a94a; --accent-soft: #f4c873;
+
+      --success: #9db35c; --info: #7fb3b3; --warning: #e2703a; --danger: #e0705c;
+      --success-bg: rgba(157,179,92,0.15); --success-border: rgba(157,179,92,0.35);
+      --info-bg: rgba(91,138,138,0.15); --info-border: rgba(91,138,138,0.35);
+      --warning-bg: rgba(217,98,43,0.15); --warning-border: rgba(217,98,43,0.35);
+      --danger-bg: rgba(179,49,28,0.15); --danger-border: rgba(179,49,28,0.35);
+
+      --button-primary-bg: #7a3f1e; --button-primary-hover-bg: #9a4f26;
+      --button-secondary-bg: #ffffff14; --button-secondary-border: #e8a94a40;
+
+      --code-bg: #0d0906; --code-panel-bg: #0d0906cc;
+      --code-text: #e8a94a; --code-comment: #8a6f52; --code-string: #9db35c;
+      --code-keyword: #e2703a; --code-border: #e8a94a33;
+      --shadow: 0 8px 32px rgba(13,9,6,0.5);
+    }
+  }
+
+  /* ruční přepnutí vždy vyhraje nad systémem */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-top: #1b120e; --bg-bottom: #3a2216;
+    --panel-bg: #140d0973; --panel-bg-solid: #1f150f;
+    --border-hover: #e8a94a40;
+    --text: #f5ece0; --muted: #f5ece08c;
+    --accent: #e8a94a; --accent-soft: #f4c873;
+
+    --success: #9db35c; --info: #7fb3b3; --warning: #e2703a; --danger: #e0705c;
+    --success-bg: rgba(157,179,92,0.15); --success-border: rgba(157,179,92,0.35);
+    --info-bg: rgba(91,138,138,0.15); --info-border: rgba(91,138,138,0.35);
+    --warning-bg: rgba(217,98,43,0.15); --warning-border: rgba(217,98,43,0.35);
+    --danger-bg: rgba(179,49,28,0.15); --danger-border: rgba(179,49,28,0.35);
+
+    --button-primary-bg: #7a3f1e; --button-primary-hover-bg: #9a4f26;
+    --button-secondary-bg: #ffffff14; --button-secondary-border: #e8a94a40;
+
+    --code-bg: #0d0906; --code-panel-bg: #0d0906cc;
+    --code-text: #e8a94a; --code-comment: #8a6f52; --code-string: #9db35c;
+    --code-keyword: #e2703a; --code-border: #e8a94a33;
+    --shadow: 0 8px 32px rgba(13,9,6,0.5);
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg-top: #fdf8f0; --bg-bottom: #f6e6c8;
+    --panel-bg: #ffffffa3; --panel-bg-solid: #fffaf0;
+    --border-hover: #a8431f40;
+    --text: #241a12; --muted: #241a12b3;
+    --accent: #a8431f; --accent-soft: #c1542e;
+    --success: #5f6f34; --info: #3f6b6b; --warning: #b34f1e; --danger: #8f2415;
+    --success-bg: rgba(124,140,74,0.14); --success-border: rgba(124,140,74,0.4);
+    --info-bg: rgba(63,107,107,0.12); --info-border: rgba(63,107,107,0.35);
+    --warning-bg: rgba(217,98,43,0.14); --warning-border: rgba(217,98,43,0.4);
+    --danger-bg: rgba(143,36,21,0.1); --danger-border: rgba(143,36,21,0.32);
+    --button-secondary-bg: #24140a0f; --button-secondary-border: #a8431f40;
+    --shadow: 0 8px 28px rgba(90,60,30,0.12);
+  }
+
+  /* ============ BASE ============ */
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--topbar-h) + 14px); }
+  body {
+    margin: 0;
+    font-family: var(--font-ui);
+    color: var(--text);
+    background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%) fixed;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+
+  a { color: var(--accent); }
+  ::selection { background: var(--amber-1); color: #1b120e; }
+  h1,h2,h3,h4,h5,h6 { font-family: var(--font-ui); margin: 0 0 0.5em; font-weight: 700; text-wrap: balance; }
+  h1 { font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.7rem); letter-spacing: -0.02em; line-height: 1.15; }
+  h2 { font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2rem); letter-spacing: -0.01em; line-height: 1.2; }
+  h3 { font-size: 1.3rem; font-weight: 600; line-height: 1.35; }
+  h4 { font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
+  h6 { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 0.6em; }
+  p { color: var(--text); max-width: 66ch; }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--font-mono); }
+
+  code, .inline-code {
+    font-family: var(--font-mono); background: var(--button-secondary-bg);
+    color: var(--accent); padding: 0.15em 0.45em; border-radius: 4px; font-size: 0.9em;
+    border: 1px solid var(--border-hover);
+  }
+
+  /* ============ TOPBAR ============ */
+  .topbar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    height: var(--topbar-h); padding: 0 20px;
+    background: var(--panel-bg-solid); background: color-mix(in srgb, var(--panel-bg-solid) 88%, transparent);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-hover);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.02rem; white-space: nowrap; }
+  .brand .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--amber-1); box-shadow: 0 0 12px var(--amber-1); flex-shrink: 0; }
+  .brand small { display: block; font-weight: 500; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.03em; }
+  .topbar nav { display: flex; gap: 18px; overflow-x: auto; scrollbar-width: none; }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; white-space: nowrap; transition: color .15s; }
+  .topbar nav a:hover { color: var(--accent); }
+  .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .theme-toggle {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: var(--r-full);
+    background: var(--button-secondary-bg); border: 1px solid var(--button-secondary-border);
+    cursor: pointer; color: var(--text); flex-shrink: 0;
+  }
+  .theme-toggle:hover { background: var(--border-hover); }
+  .theme-toggle svg { width: 18px; height: 18px; fill: currentColor; }
+  .theme-toggle .icon-moon { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: none; }
+    :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: block; }
+  }
+
+  /* ============ LAYOUT ============ */
+  .page { max-width: 1100px; margin: 0 auto; padding: 40px 20px 90px; }
+  section { padding-top: 20px; margin-bottom: 72px; scroll-margin-top: calc(var(--topbar-h) + 14px); }
+  section:last-of-type { margin-bottom: 32px; }
+  .section-header { margin-bottom: 24px; max-width: 62ch; }
+
+  .glass-panel {
+    background: var(--panel-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border-hover); border-radius: var(--r-lg);
+    padding: 28px; box-shadow: var(--shadow);
+  }
+  @media (max-width: 560px) { .glass-panel { padding: 20px; } }
+
+  /* ============ HERO ============ */
+  .hero { display: flex; flex-direction: column; gap: 16px; }
+  .hero .tagline { color: var(--accent-soft); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.76rem; }
+  .hero p.lead { font-size: 1.08rem; color: var(--muted); max-width: 640px; }
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 6px; }
+  .stat-tile { background: var(--button-secondary-bg); border: 1px solid var(--border-hover); border-radius: var(--r-md); padding: 14px 16px; }
+  .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat-tile .label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .hero-note { display: flex; gap: 12px; align-items: flex-start; background: var(--info-bg); border: 1px solid var(--info-border); padding: 14px 16px; border-radius: var(--r-md); margin-top: 4px; }
+  .hero-note svg { width: 18px; height: 18px; flex-shrink: 0; fill: var(--info); margin-top: 2px; }
+  .hero-note p { margin: 0; font-size: 0.88rem; color: var(--text); }
+
+  /* ============ BADGES / TAGS ============ */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
+    border-radius: var(--r-full); border: 1px solid transparent; white-space: nowrap;
+  }
+  .badge-success { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+  .badge-info { background: var(--info-bg); color: var(--info); border-color: var(--info-border); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-border); }
+  .badge-neutral { background: var(--button-secondary-bg); color: var(--muted); border-color: var(--border-hover); }
+
+  /* ============ TOOL GRID ============ */
+  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
+  .tool-card { display: flex; flex-direction: column; gap: 12px; }
+  .tool-head { display: flex; align-items: center; gap: 12px; }
+  .tool-mark {
+    width: 44px; height: 44px; border-radius: var(--r-md); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; color: #fdf8f0;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+  }
+  .tool-name-wrap { min-width: 0; }
+  .tool-name { font-weight: 700; font-size: 1rem; line-height: 1.25; }
+  .tool-cat { font-size: 0.74rem; color: var(--muted); margin-top: 1px; }
+  .tool-desc { font-size: 0.88rem; color: var(--text); margin: 0; }
+  .tool-uses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .tool-uses li { font-size: 0.82rem; color: var(--muted); padding-left: 16px; position: relative; }
+  .tool-uses li::before { content: "→"; position: absolute; left: 0; color: var(--accent-soft); font-weight: 700; }
+  .tool-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border-hover); }
+  .tool-link {
+    font-size: 0.82rem; font-weight: 700; color: var(--accent); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .tool-link:hover { text-decoration: underline; }
+  .tool-link svg { width: 13px; height: 13px; fill: currentColor; }
+
+  /* ============ FILTER CHIPS ============ */
+  .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .filter-chip {
+    font-family: var(--font-ui); font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    padding: 7px 14px; border-radius: var(--r-full); border: 1px solid var(--border-hover);
+    background: var(--button-secondary-bg); color: var(--muted);
+  }
+  .filter-chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fdf8f0; }
+  :root[data-theme="dark"] .filter-chip[aria-pressed="true"] { color: #1b120e; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .filter-chip[aria-pressed="true"] { color: #1b120e; } }
+
+  /* ============ PRINCIP AI ============ */
+  .principle-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: start; }
+  @media (max-width: 820px) { .principle-grid { grid-template-columns: 1fr; } }
+  .principle-grid p { max-width: 62ch; }
+  .diagram-figure { margin: 0; background: var(--panel-bg); border: 1px solid var(--border-hover); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
+  .diagram-figure svg { width: 100%; height: auto; display: block; }
+  .diagram-figure figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 10px; text-align: center; }
+  .diagram-label { font-family: var(--font-mono); font-size: 10.5px; }
+  .diagram-box { fill: var(--panel-bg-solid); stroke: var(--border-hover); stroke-width: 1.4; }
+  .diagram-arrow { stroke: var(--muted); fill: none; stroke-width: 1.6; }
+  .diagram-accent { stroke: var(--accent); fill: none; stroke-width: 2; }
+
+  .limit-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+  /* ============ ALERT / CALLOUT ============ */
+  .alert-box { display: flex; gap: 14px; padding: 15px 17px; border-radius: var(--r-md); border: 1px solid; margin-bottom: 12px; }
+  .alert-box svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+  .alert-box .alert-title { font-weight: 700; margin-bottom: 3px; font-size: 0.92rem; }
+  .alert-box p { margin: 0; font-size: 0.86rem; color: var(--text); }
+  .alert-success { background: var(--success-bg); border-color: var(--success-border); }
+  .alert-success svg { fill: var(--success); }
+  .alert-warning { background: var(--warning-bg); border-color: var(--warning-border); }
+  .alert-warning svg { fill: var(--warning); }
+  .alert-danger { background: var(--danger-bg); border-color: var(--danger-border); }
+  .alert-danger svg { fill: var(--danger); }
+  .alert-info { background: var(--info-bg); border-color: var(--info-border); }
+  .alert-info svg { fill: var(--info); }
+
+  /* ============ PRAXE GRID ============ */
+  .praxe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-bottom: 28px; }
+  .praxe-card h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .praxe-card h4 .n { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem; }
+  .praxe-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .praxe-card li { font-size: 0.86rem; color: var(--muted); padding-left: 16px; position: relative; }
+  .praxe-card li::before { content: "–"; position: absolute; left: 0; color: var(--accent-soft); }
+  .praxe-card li b { color: var(--text); font-weight: 600; }
+
+  /* ============ CODE / TERMINAL (prompt ukázka) ============ */
+  .code-window { background: var(--code-panel-bg); border: 1px solid var(--code-border); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow); }
+  .code-window-header { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: rgba(0,0,0,0.28); border-bottom: 1px solid var(--code-border); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .code-dots span:nth-child(1) { background: var(--danger); }
+  .code-dots span:nth-child(2) { background: var(--warning); }
+  .code-dots span:nth-child(3) { background: var(--success); }
+  .code-filename { font-family: var(--font-mono); font-size: 0.72rem; color: #f5ece08c; }
+  .copy-btn { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; background: transparent; border: 1px solid var(--code-border); color: var(--amber-2); padding: 5px 10px; border-radius: var(--r-sm); cursor: pointer; }
+  .copy-btn:hover { background: #e8a94a1a; }
+  .code-window pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.7; color: var(--code-text); white-space: pre-wrap; }
+  .prompt-sign { color: var(--rust-2); font-weight: 700; }
+  .c-comment { color: var(--code-comment); font-style: italic; }
+
+  /* ============ FOOTER ============ */
+  footer { text-align: center; padding: 30px 20px 50px; color: var(--muted); font-size: 0.82rem; }
+  footer a { color: var(--muted); }
+  footer .foot-links { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; margin-top: 10px; }
+
+  a:focus-visible, button:focus-visible, .filter-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>AI Kompas<br><small>AI ambasador · VOŠ, SPŠ a SOŠ Varnsdorf</small></span>
+  </div>
+  <nav>
+    <a href="#nastroje">Nástroje</a>
+    <a href="#princip">Jak AI funguje</a>
+    <a href="#praxe">V praxi</a>
+    <a href="#bezpecnost">Bezpečnost</a>
+  </nav>
+  <div class="topbar-right">
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Přepnout světlý a tmavý režim">
+      <svg class="icon-sun" viewBox="0 0 24 24"><path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0-15a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.41 1.41A1 1 0 115.64 7.05L4.22 5.64a1 1 0 010-1.42zm12.73 12.73a1 1 0 011.41 0l1.42 1.41a1 1 0 11-1.42 1.42l-1.41-1.42a1 1 0 010-1.41zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.41l1.41-1.42a1 1 0 111.42 1.42l-1.42 1.41a1 1 0 01-1.41 0zM16.95 5.64a1 1 0 010-1.42l1.41-1.41a1 1 0 111.42 1.41l-1.42 1.42a1 1 0 01-1.41 0z"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14c0-1.2.27-2.35.73-3.37A1 1 0 008.6.14a10.14 10.14 0 1013.23 13.23 1 1 0 00-.19-.37z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="page">
+
+  <section id="uvod">
+    <div class="glass-panel hero">
+      <div class="tagline">Průvodce · Umělá inteligence ve výuce</div>
+      <h1>Kompas pro AI ve výuce</h1>
+      <p class="lead">Přehled AI nástrojů využitelných ve škole, jejich praktické nasazení v hodinách i mimo ně, a srozumitelné vysvětlení principu, jak tyhle nástroje ve skutečnosti fungují — sepsáno pro roli AI ambasadora a k volnému sdílení s kolegy.</p>
+
+      <div class="stat-row">
+        <div class="stat-tile"><div class="num">~40</div><div class="label">AI licencí pro naši školu</div></div>
+        <div class="stat-tile"><div class="num">1&nbsp;121</div><div class="label">licencí celkem v kraji</div></div>
+        <div class="stat-tile"><div class="num">51</div><div class="label">AI ambasadorů v projektu</div></div>
+        <div class="stat-tile"><div class="num">2027</div><div class="label">start ostrého provozu</div></div>
+      </div>
+
+      <div class="hero-note">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <p>Ústecký kraj navazuje na projekt „Návrat do budoucnosti" memorandy s Google a Microsoftem — do léta 2029 má vzniknout síť AI kabinetů a ambasadorů na školách. Kraj zatím nezveřejnil, na které konkrétní nástroje bude přesně vázaných 40 licencí naší školy — dashboard níže proto pokrývá širší okruh nástrojů, ne jen jeden konkrétní produkt.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="nastroje">
+    <div class="section-header">
+      <h6>Dashboard · 10 nástrojů</h6>
+      <h2>AI nástroje pro školství</h2>
+      <p class="muted">Filtrujte podle typu použití, nebo scrollujte celý přehled. U každého nástroje je způsob přístupu a dvě až tři konkrétní ukázky využití v hodině.</p>
+    </div>
+
+    <div class="filter-row" id="filter-row" role="group" aria-label="Filtrovat nástroje podle kategorie">
+      <button class="filter-chip" type="button" data-filter="vse" aria-pressed="true">Vše</button>
+      <button class="filter-chip" type="button" data-filter="asistent" aria-pressed="false">Obecný asistent</button>
+      <button class="filter-chip" type="button" data-filter="vyuka" aria-pressed="false">Příprava výuky</button>
+      <button class="filter-chip" type="button" data-filter="studium" aria-pressed="false">Výzkum a studium</button>
+      <button class="filter-chip" type="button" data-filter="obsah" aria-pressed="false">Tvorba obsahu</button>
+    </div>
+
+    <div class="tool-grid" id="tool-grid">
+
+      <div class="glass-panel tool-card" data-cat="asistent">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#4a7fc9;">Ge</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Google Gemini</div>
+            <div class="tool-cat">Obecný AI asistent · Google</div>
+          </div>
+        </div>
+        <p class="tool-desc">Chatbot integrovaný do Google Workspace for Education (Classroom, Docs, Slides). Umí pracovat s textem i obrázky a propojuje se s dalšími Google nástroji.</p>
+        <ul class="tool-uses">
+          <li>Příprava testů, kvízů a hodnoticích rubrik s klíčem odpovědí</li>
+          <li>Diferenciace stejného zadání pro různé úrovně žáků</li>
+          <li>Práce přímo v Dokumentech a Prezentacích Google</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-success">Zdarma v rámci Workspace</span>
+          <a class="tool-link" href="https://edu.google.com/ai/gemini-for-education/" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="asistent">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#2e7dbd;">Co</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Microsoft Copilot</div>
+            <div class="tool-cat">Obecný AI asistent · Microsoft</div>
+          </div>
+        </div>
+        <p class="tool-desc">AI přímo ve Wordu, PowerPointu, Excelu, Teams a OneNote. Funkce <em>Teach</em> vytvoří přípravu na hodinu podle zadaného tématu a ročníku.</p>
+        <ul class="tool-uses">
+          <li>Vygenerování celé prezentace nebo pracovního listu z jedné věty zadání</li>
+          <li>Analýza výsledků žáků v Excelu a graf pro třídní schůzku</li>
+          <li>Speaker Coach — zpětná vazba žákům na ústní prezentaci</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-info">Součástí M365</span>
+          <a class="tool-link" href="https://www.microsoft.com/cs-cz/education" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="asistent">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#12a37f;">Ch</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">ChatGPT</div>
+            <div class="tool-cat">Obecný AI asistent · OpenAI</div>
+          </div>
+        </div>
+        <p class="tool-desc">Nejrozšířenější a nejuniverzálnější chatbot. Zvládá češtinu velmi dobře, bez vazby na konkrétní kancelářský balík.</p>
+        <ul class="tool-uses">
+          <li>Brainstorming aktivit, křížovek a projektových zadání</li>
+          <li>Rychlé shrnutí nebo zjednodušení odborného textu pro žáky</li>
+          <li>Nácvik konverzace v cizím jazyce formou dialogu</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-neutral">Freemium účet</span>
+          <a class="tool-link" href="https://chatgpt.com" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="asistent">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#cc785c;">Cl</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Claude</div>
+            <div class="tool-cat">Obecný AI asistent · Anthropic</div>
+          </div>
+        </div>
+        <p class="tool-desc">Silný v delších textech, opravách a citlivém psaní zpětné vazby. Tenhle dashboard je mimochodem postavený s jeho pomocí.</p>
+        <ul class="tool-uses">
+          <li>Podrobná písemná zpětná vazba k slohovým a seminárním pracím</li>
+          <li>Rozbor a úprava dlouhých dokumentů (RVP, ŠVP, směrnice)</li>
+          <li>Program „Claude for Teachers" zatím jen pro učitele v USA — u nás běžný účet</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-neutral">Freemium účet</span>
+          <a class="tool-link" href="https://claude.ai" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="vyuka">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#7c8c4a;">Sb</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">ScioBot</div>
+            <div class="tool-cat">Příprava výuky · český, vázaný na RVP</div>
+          </div>
+        </div>
+        <p class="tool-desc">Český nástroj od Scio. Zadáte téma a ročník, ScioBot během chvíle navrhne cíle hodiny, aktivity a materiály — psané rovnou pro české školství.</p>
+        <ul class="tool-uses">
+          <li>Kompletní příprava na hodinu včetně vzdělávacích cílů</li>
+          <li>Generování pracovních listů k tématu</li>
+          <li>Jediný nástroj v přehledu stavěný přímo na RVP</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-warning">10 příprav zdarma/měs.</span>
+          <a class="tool-link" href="https://www.sciobot.cz" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="vyuka">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#9a5fc9;">Ms</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">MagicSchool AI</div>
+            <div class="tool-cat">Příprava výuky · anglicky</div>
+          </div>
+        </div>
+        <p class="tool-desc">Rozcestník s více než 80 dílčími nástroji pro učitele — od plánu hodiny po komentář na vysvědčení. Anglické rozhraní, ale výstup si necháte přeložit.</p>
+        <ul class="tool-uses">
+          <li>Generátor rubrik a strukturované zpětné vazby k esejím</li>
+          <li>Tvorba IEP (individuálních plánů) pro speciální pedagogy</li>
+          <li>Automatické návrhy e-mailů rodičům</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-neutral">Freemium účet</span>
+          <a class="tool-link" href="https://www.magicschool.ai" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="studium">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#6b7fd8;">Nb</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">NotebookLM</div>
+            <div class="tool-cat">Výzkum a studium · Google</div>
+          </div>
+        </div>
+        <p class="tool-desc">Nahrajete vlastní materiály (skripta, prezentace, PDF) a AI z nich vytvoří poznámky, kartičky na procvičování i „podcast" se dvěma moderátory, kteří látku probírají.</p>
+        <ul class="tool-uses">
+          <li>Audio shrnutí dlouhého textu k poslechu cestou domů</li>
+          <li>Automatické kartičky a testy z nahraných studijních materiálů</li>
+          <li>Odpovídá jen na základě vámi nahraných zdrojů — menší riziko výmyslu</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-success">Zdarma</span>
+          <a class="tool-link" href="https://notebooklm.google" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="studium">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#1fb0a3;">Pp</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Perplexity</div>
+            <div class="tool-cat">Výzkum a studium · vyhledávání</div>
+          </div>
+        </div>
+        <p class="tool-desc">AI vyhledávač, který u každého tvrzení uvádí zdroj. Vhodný tam, kde na ověřitelnosti záleží víc než u běžného chatbota.</p>
+        <ul class="tool-uses">
+          <li>Rešerše k seminárním pracím s odkazy na zdroje k ověření</li>
+          <li>Rychlé ověření aktuálního faktu (na rozdíl od chatbotů bez přístupu na web)</li>
+          <li>Ukázka žákům, jak vypadá citovatelný AI výstup</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-neutral">Freemium účet</span>
+          <a class="tool-link" href="https://www.perplexity.ai" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="obsah">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#c94f8f;">Cv</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Canva (Magic Studio)</div>
+            <div class="tool-cat">Tvorba obsahu · vizuál</div>
+          </div>
+        </div>
+        <p class="tool-desc">Canva pro školy je zdarma pro ověřené instituce. Magic Studio přidává AI generování obrázků, automatický převod dokumentu na prezentaci a úpravu na jeden klik.</p>
+        <ul class="tool-uses">
+          <li>Prezentace, plakáty a pracovní listy s jednotným vizuálem</li>
+          <li>Magic Switch — přemění hotový dokument rovnou na prezentaci</li>
+          <li>Ilustrace k pracovním listům bez řešení autorských práv</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-success">Zdarma pro školu</span>
+          <a class="tool-link" href="https://www.canva.com/ai-for-teachers/" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="glass-panel tool-card" data-cat="obsah">
+        <div class="tool-head">
+          <div class="tool-mark" style="background:#3f95c9;">Ep</div>
+          <div class="tool-name-wrap">
+            <div class="tool-name">Edpuzzle</div>
+            <div class="tool-cat">Tvorba obsahu · interaktivní video</div>
+          </div>
+        </div>
+        <p class="tool-desc">Do jakéhokoli výukového videa vloží otázky, na které žák musí odpovědět, než pokračuje dál — a vy vidíte přehled odpovědí celé třídy.</p>
+        <ul class="tool-uses">
+          <li>Převrácená třída — žáci zhlédnou video s otázkami jako domácí přípravu</li>
+          <li>Okamžitý přehled, kdo látku pochopil a kdo ne</li>
+          <li>Funguje s vlastním videem i s YouTube</li>
+        </ul>
+        <div class="tool-foot">
+          <span class="badge badge-neutral">Freemium účet</span>
+          <a class="tool-link" href="https://edpuzzle.com" target="_blank" rel="noopener">Otevřít <svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zM5 5h5V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5h-2v5H5V5z"/></svg></a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="princip">
+    <div class="section-header">
+      <h6>Populárně vysvětleno</h6>
+      <h2>Jak AI vlastně funguje</h2>
+    </div>
+    <div class="principle-grid">
+      <div>
+        <p>Chatbot jako Gemini, Copilot nebo ChatGPT <strong>nemyslí</strong> v lidském slova smyslu. Uvnitř běží tzv. <strong>velký jazykový model</strong> — obří systém, který se na miliardách textů z internetu, knih a článků naučil jedinou dovednost: odhadnout, jaké slovo (přesněji <em>token</em>, kousek slova) nejpravděpodobněji následuje po tom, co už bylo napsáno.</p>
+        <p>Když napíšete prompt, model si ho rozdělí na tokeny, spočítá pravděpodobnost dalšího tokenu, jeden vybere, přidá ho k textu — a celý výpočet zopakuje. Znovu, a znovu, token po tokenu, dokud věta nedokončí odpověď. Diagram vpravo ukazuje přesně tenhle koloběh.</p>
+        <p>Není v tom žádné „porozumění" v lidském smyslu ani přístup k databázi faktů, kterou by si model ověřoval — jen extrémně sofistikovaný odhad na základě vzorců, které se naučil při trénování.</p>
+
+        <div class="limit-list">
+          <div class="alert-box alert-warning">
+            <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            <div><div class="alert-title">Halucinace</div><p>Model umí sebejistě vymyslet fakt, citaci nebo zdroj, který neexistuje — protože jeho úkolem je vygenerovat pravděpodobně znějící text, ne zaručeně pravdivý. Fakta, jména a čísla si vždy ověřte.</p></div>
+          </div>
+          <div class="alert-box alert-info">
+            <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+            <div><div class="alert-title">Data mají datum</div><p>Model zná svět jen do určitého data tréninku. Na aktuální události (letošní zákon, dnešní zprávy) se ho ptejte jen přes nástroj s přístupem na web (Perplexity, Gemini s vyhledáváním).</p></div>
+          </div>
+          <div class="alert-box alert-danger">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm1-4h-2V6h2v7z"/></svg>
+            <div><div class="alert-title">Zkreslení (bias)</div><p>Model odráží data, na kterých se učil — včetně jejich předsudků a mezer. U citlivých témat (hodnocení lidí, historické spory) bere jeho výstup jako jeden úhel pohledu, ne jako rozsudek.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <figure class="diagram-figure">
+        <svg viewBox="0 0 400 430" role="img" aria-label="Diagram: text se rozdělí na tokeny, model odhadne pravděpodobnost dalšího tokenu, vybere jeden, přidá ho k textu a smyčka se opakuje, dokud nevznikne celá odpověď.">
+          <rect class="diagram-box" x="60" y="8" width="280" height="42" rx="8"/>
+          <text class="diagram-label" x="200" y="33" text-anchor="middle" fill="var(--text)">„Vysvětli fotosyntézu"</text>
+
+          <line class="diagram-arrow" x1="200" y1="50" x2="200" y2="76" marker-end="url(#arr)"/>
+
+          <rect class="diagram-box" x="40" y="78" width="320" height="42" rx="8"/>
+          <text class="diagram-label" x="200" y="103" text-anchor="middle" fill="var(--text)">rozdělení na tokeny</text>
+
+          <line class="diagram-arrow" x1="200" y1="120" x2="200" y2="146" marker-end="url(#arr)"/>
+
+          <rect x="30" y="148" width="340" height="150" rx="12" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 4"/>
+          <text class="diagram-label" x="200" y="168" text-anchor="middle" fill="var(--accent)" font-weight="700">MODEL (smyčka)</text>
+
+          <rect class="diagram-box" x="55" y="182" width="290" height="40" rx="8"/>
+          <text class="diagram-label" x="200" y="206" text-anchor="middle" fill="var(--text)">odhad pravděpodobnosti dalšího tokenu</text>
+
+          <line class="diagram-arrow" x1="200" y1="222" x2="200" y2="242" marker-end="url(#arr)"/>
+
+          <rect class="diagram-box" x="55" y="244" width="290" height="40" rx="8"/>
+          <text class="diagram-label" x="200" y="268" text-anchor="middle" fill="var(--text)">výběr jednoho tokenu</text>
+
+          <path class="diagram-arrow" d="M 345 264 C 385 264, 385 200, 348 198" marker-end="url(#arr)"/>
+          <text class="diagram-label" x="375" y="235" text-anchor="middle" fill="var(--muted)" font-size="9.5" transform="rotate(90 375 235)">opakuje se pro každý token</text>
+
+          <line class="diagram-arrow" x1="200" y1="298" x2="200" y2="324" marker-end="url(#arr)"/>
+
+          <rect class="diagram-box" x="60" y="326" width="280" height="42" rx="8" style="fill: var(--success-bg); stroke: var(--success-border);"/>
+          <text class="diagram-label" x="200" y="351" text-anchor="middle" fill="var(--success)" font-weight="700">sestavená odpověď</text>
+
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+            </marker>
+          </defs>
+        </svg>
+        <figcaption>Model neodpovídá naráz — skládá odpověď token po tokenu, pokaždé znovu odhadem toho nejpravděpodobnějšího dalšího kousku textu.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="praxe">
+    <div class="section-header">
+      <h6>Konkrétní nasazení</h6>
+      <h2>Využití AI v praxi ve výuce</h2>
+      <p class="muted">Čtyři oblasti, kde AI učitelům podle zahraničních i českých zkušeností nejvíc reálně šetří čas.</p>
+    </div>
+
+    <div class="praxe-grid">
+      <div class="glass-panel praxe-card">
+        <h4><span class="n">01</span> Příprava výuky</h4>
+        <ul>
+          <li><b>Přípravy na hodinu</b> — zadáte téma a ročník, dostanete cíle, aktivity a časový plán</li>
+          <li><b>Pracovní listy a testy</b> — včetně variant s různou obtížností</li>
+          <li><b>Prezentace</b> — z osnovy nebo existujícího dokumentu za pár minut</li>
+        </ul>
+      </div>
+      <div class="glass-panel praxe-card">
+        <h4><span class="n">02</span> Diferenciace a zpětná vazba</h4>
+        <ul>
+          <li><b>Stejné téma, jiná úroveň</b> — přeformulování textu pro slabší i nadané žáky</li>
+          <li><b>Komentáře k písemným pracím</b> — konkrétní, adresné, bez hodinové opravy ručně</li>
+          <li><b>Hodnoticí rubriky</b> — jasná kritéria místo dojmu</li>
+        </ul>
+      </div>
+      <div class="glass-panel praxe-card">
+        <h4><span class="n">03</span> Administrativa</h4>
+        <ul>
+          <li><b>Komentáře na vysvědčení</b> — personalizovaný návrh k doladění</li>
+          <li><b>E-maily a zprávy rodičům</b> — první verze místo prázdné stránky</li>
+          <li><b>Zápisy z porad</b> — přepis a shrnutí z poznámek</li>
+        </ul>
+      </div>
+      <div class="glass-panel praxe-card">
+        <h4><span class="n">04</span> Podpora žáků</h4>
+        <ul>
+          <li><b>Zjednodušení textu</b> — pro žáky s SVP nebo cizince ve výuce</li>
+          <li><b>Nácvik nanečisto</b> — AI jako partner na procvičení místo hotové odpovědi</li>
+          <li><b>Předčítání a shrnutí</b> — opora pro žáky se čtenářskými obtížemi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-window">
+      <div class="code-window-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">ukázka promptu</span>
+        <button class="copy-btn" id="copy-prompt" type="button">Kopírovat</button>
+      </div>
+      <pre id="prompt-text"><span class="c-comment"># dobrý prompt je konkrétní: ročník, cíl, formát, rozsah</span>
+<span class="prompt-sign">&gt;</span> Priprav pracovni list na tema koloběh vody pro 6. třídu ZŠ.
+  Zahrň 4 otázky s otevřenou odpovědí a jednu doplňovací.
+  Rozsah na jednu stránku A4, jazyk přiměřený 11-12 letým žákům.</pre>
+    </div>
+  </section>
+
+  <section id="bezpecnost">
+    <div class="section-header">
+      <h6>Než AI nasadíte do hodiny</h6>
+      <h2>Bezpečnost, GDPR a etika</h2>
+    </div>
+
+    <div class="alert-box alert-danger">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <div><div class="alert-title">Osobní údaje žáků nepatří do běžného veřejného chatbotu</div><p>Jméno, třída, zdravotní nebo rodinná situace konkrétního žáka do promptu nevkládejte — u volně dostupných nástrojů nemáte jistotu, jak dlouho a k čemu se text uchovává. Pište obecně („žák v 8. třídě s SPU“ místo jména).</p></div>
+    </div>
+    <div class="alert-box alert-warning">
+      <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      <div><div class="alert-title">Výstup vždy zkontrolujte, než ho použijete</div><p>Zvlášť u čísel, dat, citací a matematiky. AI generuje text, který zní věrohodně — to není totéž jako ověřený.</p></div>
+    </div>
+    <div class="alert-box alert-info">
+      <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+      <div><div class="alert-title">Buďte transparentní vůči žákům i sobě navzájem</div><p>Když použijete AI k přípravě materiálu, řekněte to. Totéž platí obráceně — naučte žáky přiznat, kde jim AI pomohla, místo aby to tajili.</p></div>
+    </div>
+    <div class="alert-box alert-success">
+      <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+      <div><div class="alert-title">AI jako trenažér, ne jako náhrada myšlení</div><p>Nejsilnější použití u žáků: nechat AI klást otázky a dávat zpětnou vazbu na jejich vlastní pokus — ne rovnou vydat hotovou odpověď k opsání.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>AI Kompas — připraveno pro AI ambasadora, VOŠ, SPŠ a SOŠ Varnsdorf. Obor se mění rychle, u konkrétních nástrojů si vždy ověřte aktuální podmínky.</div>
+    <div class="foot-links">
+      <a href="https://www.kr-ustecky.cz/ustecky-kraj-pokracuje-v-zavadeni-umele-inteligence-do-strednich-skol-navazuje-na-navrat-do-budoucnosti" target="_blank" rel="noopener">Projekt Ústeckého kraje</a>
+      <a href="https://edu.gov.cz/digitalizujeme/ai/" target="_blank" rel="noopener">edu.gov.cz — AI ve vzdělávání</a>
+      <a href="https://www.sciobot.cz" target="_blank" rel="noopener">ScioBot</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var toggle = document.getElementById('theme-toggle');
+
+  function getStored() {
+    try { return localStorage.getItem('ai-kompas-theme'); } catch (e) { return null; }
+  }
+  function setStored(v) {
+    try { localStorage.setItem('ai-kompas-theme', v); } catch (e) {}
+  }
+  function effectiveTheme() {
+    var explicit = root.getAttribute('data-theme');
+    if (explicit === 'light' || explicit === 'dark') return explicit;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  var stored = getStored();
+  if (stored === 'light' || stored === 'dark') {
+    root.setAttribute('data-theme', stored);
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      setStored(next);
+    });
+  }
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+      if (!getStored()) { /* žádná ruční volba -> necháme systém řídit přes CSS media query */ }
+    });
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var chips = document.querySelectorAll('.filter-chip');
+  var cards = document.querySelectorAll('#tool-grid .tool-card');
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      var f = chip.getAttribute('data-filter');
+      cards.forEach(function (card) {
+        var show = f === 'vse' || card.getAttribute('data-cat') === f;
+        card.hidden = !show;
+      });
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy-prompt');
+  var text = document.getElementById('prompt-text');
+  if (!btn || !text) return;
+  btn.addEventListener('click', function () {
+    var plain = text.innerText;
+    function done(ok) {
+      btn.textContent = ok ? 'Zkopírováno' : 'Označte a Ctrl+C';
+      setTimeout(function () { btn.textContent = 'Kopírovat'; }, 1800);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(plain).then(function () { done(true); }, function () {
+        selectText(); done(false);
+      });
+    } else {
+      selectText(); done(false);
+    }
+    function selectText() {
+      var range = document.createRange();
+      range.selectNodeContents(text);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  });
+})();
+</script>
+</body>
+</html>
