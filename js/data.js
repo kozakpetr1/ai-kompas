@@ -13,7 +13,7 @@ var UCELY = [
 
 var NASTROJE = [
 /* ---------------------------------------------------------------- GEMINI */
-{ id: 'gemini', nazev: 'Google Gemini', firma: 'Google', mark: 'Ge', barva: '#4a7fc9', cat: 'asistent', catNazev: 'Obecný AI asistent · Google',
+{ id: 'gemini', nazev: 'Google Gemini', firma: 'Google', mark: 'Ge', barva: '#3b7cf0', cat: 'asistent', catNazev: 'Obecný AI asistent · Google',
   popis: 'AI asistent Googlu propojený s Classroom, Dokumenty, Prezentacemi a Gmailem. Ve školním účtu Workspace for Education s ochranou dat.',
   pouziti: ['Příprava hodiny a rubriky přímo v Google Classroom', 'Gemy – vlastní asistenti, které učitel přiřadí třídě', 'Deep Research – podklady k tématu s odkazy na zdroje'],
   badge: ['Zdarma v rámci Workspace', 'success'], url: 'https://edu.google.com/intl/ALL_cz/ai/gemini-for-education/',
@@ -85,7 +85,7 @@ var NASTROJE = [
   odkazy: [['ChatGPT', 'https://chatgpt.com'], ['Nastavení dat (nápověda)', 'https://help.openai.com/']]
 },
 /* ---------------------------------------------------------------- CLAUDE */
-{ id: 'claude', nazev: 'Claude', firma: 'Anthropic', mark: 'Cl', barva: '#c1542e', cat: 'asistent', catNazev: 'Obecný AI asistent · Anthropic',
+{ id: 'claude', nazev: 'Claude', firma: 'Anthropic', mark: 'Cl', barva: '#d97757', cat: 'asistent', catNazev: 'Obecný AI asistent · Anthropic',
   popis: 'Silný v dlouhých textech, pečlivé zpětné vazbě a tvorbě interaktivních materiálů (artefaktů). Jen pro dospělé – tedy pro učitele, ne pro žáky.',
   pouziti: ['Podrobná písemná zpětná vazba k esejím a seminárním pracím', 'Interaktivní simulace a kvízy jako sdílená webová stránka', 'Rozbor dlouhých dokumentů – RVP, ŠVP, směrnice'],
   badge: ['Freemium · 18+', 'neutral'], url: 'https://claude.ai',
@@ -109,7 +109,7 @@ var NASTROJE = [
   odkazy: [['Claude', 'https://claude.ai'], ['Nápověda Claude', 'https://support.claude.com'], ['Claude for Education', 'https://www.anthropic.com/education']]
 },
 /* ---------------------------------------------------------------- SCIOBOT */
-{ id: 'sciobot', nazev: 'ScioBot', firma: 'Scio', mark: 'Sb', barva: '#7c8c4a', cat: 'vyuka', catNazev: 'Příprava výuky · český, vázaný na RVP',
+{ id: 'sciobot', nazev: 'ScioBot', firma: 'Scio', mark: 'Sb', barva: '#0f9d7a', cat: 'vyuka', catNazev: 'Příprava výuky · český, vázaný na RVP',
   popis: 'Český nástroj od Scio. Zadáte téma a ročník, ScioBot navrhne cíle hodiny, aktivity a materiály – psané rovnou pro české školství.',
   pouziti: ['Kompletní příprava na hodinu včetně vzdělávacích cílů', 'Pracovní listy k tématu', 'Jediný nástroj v přehledu stavěný přímo na RVP'],
   badge: ['Omezeně zdarma', 'info'], url: 'https://www.sciobot.cz',
@@ -133,7 +133,7 @@ var NASTROJE = [
   odkazy: [['ScioBot', 'https://www.sciobot.cz'], ['Scio', 'https://www.scio.cz']]
 },
 /* ---------------------------------------------------------------- MAGICSCHOOL */
-{ id: 'magicschool', nazev: 'MagicSchool AI', firma: 'MagicSchool', mark: 'Ms', barva: '#7a3428', cat: 'vyuka', catNazev: 'Příprava výuky · anglické rozhraní',
+{ id: 'magicschool', nazev: 'MagicSchool AI', firma: 'MagicSchool', mark: 'Ms', barva: '#7c3aed', cat: 'vyuka', catNazev: 'Příprava výuky · anglické rozhraní',
   popis: 'Rozcestník s více než 80 dílčími nástroji pro učitele – od plánu hodiny po komentář na vysvědčení. Rozhraní anglicky, výstup lze mít v češtině.',
   pouziti: ['Generátor rubrik a strukturované zpětné vazby', 'Text Leveler – stejný text pro různé úrovně žáků', 'MagicStudent – bezpečné AI prostředí pro žáky pod dohledem učitele'],
   badge: ['Freemium účet', 'neutral'], url: 'https://www.magicschool.ai',
@@ -157,7 +157,7 @@ var NASTROJE = [
   odkazy: [['MagicSchool', 'https://www.magicschool.ai']]
 },
 /* ---------------------------------------------------------------- NOTEBOOKLM */
-{ id: 'notebooklm', nazev: 'NotebookLM', firma: 'Google', mark: 'Nb', barva: '#3f6b6b', cat: 'studium', catNazev: 'Výzkum a studium · Google',
+{ id: 'notebooklm', nazev: 'NotebookLM', firma: 'Google', mark: 'Nb', barva: '#0f766e', cat: 'studium', catNazev: 'Výzkum a studium · Google',
   popis: 'Nahrajete vlastní materiály a AI z nich vytvoří poznámky, kartičky, kvízy, myšlenkovou mapu i audio „podcast“ se dvěma moderátory.',
   pouziti: ['Audio přehled dlouhého textu k poslechu (i česky)', 'Kartičky a kvízy z nahraných studijních materiálů', 'Odpovídá jen z vašich zdrojů – menší riziko výmyslu'],
   badge: ['Zdarma', 'success'], url: 'https://notebooklm.google.com',
@@ -229,7 +229,7 @@ var NASTROJE = [
   odkazy: [['Canva pro vzdělávání', 'https://www.canva.com/cs_cz/vzdelavani/'], ['Magic Studio', 'https://www.canva.com/magic/']]
 },
 /* ---------------------------------------------------------------- EDPUZZLE */
-{ id: 'edpuzzle', nazev: 'Edpuzzle', firma: 'Edpuzzle', mark: 'Ep', barva: '#b34f1e', cat: 'obsah', catNazev: 'Tvorba obsahu · interaktivní video',
+{ id: 'edpuzzle', nazev: 'Edpuzzle', firma: 'Edpuzzle', mark: 'Ep', barva: '#ea580c', cat: 'obsah', catNazev: 'Tvorba obsahu · interaktivní video',
   popis: 'Do výukového videa vloží otázky, na které žák musí odpovědět, než pokračuje dál. AI pomáhá otázky navrhnout, učitel vidí přehled odpovědí celé třídy.',
   pouziti: ['Převrácená třída – video s otázkami jako domácí příprava', 'Okamžitý přehled, kdo látku pochopil a kdo ne', 'Funguje s vlastním videem i s YouTube'],
   badge: ['Freemium účet', 'neutral'], url: 'https://edpuzzle.com',

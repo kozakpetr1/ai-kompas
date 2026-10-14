@@ -97,7 +97,7 @@ function kresliMapu(n) {
   var nm = n.nazev.split(' (')[0];
   var lines = nm.length > 12 && nm.indexOf(' ') > 0 ? [nm.slice(0, nm.indexOf(' ')), nm.slice(nm.indexOf(' ') + 1)] : [nm];
   var center = '<circle cx="' + cx + '" cy="' + cy + '" r="68" fill="' + n.barva + '"/>' +
-    lines.map(function (t, k) { return '<text x="' + cx + '" y="' + (cy + 6 + (k - (lines.length - 1) / 2) * 20) + '" text-anchor="middle" style="fill:#fdf8f0;font-weight:800;font-size:18px">' + esc(t) + '</text>'; }).join('');
+    lines.map(function (t, k) { return '<text x="' + cx + '" y="' + (cy + 6 + (k - (lines.length - 1) / 2) * 20) + '" text-anchor="middle" style="fill:#ffffff;font-weight:800;font-size:18px">' + esc(t) + '</text>'; }).join('');
 
   box.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Myšlenková mapa: k čemu použít ' + esc(n.nazev) + '"><g id="mm-g">' + edges + center + nodes + leaves + '</g></svg>';
   var g = document.getElementById('mm-g');
@@ -155,7 +155,7 @@ function miniMapa(n) {
   var nm = n.nazev.split(' (')[0], sp = nm.indexOf(' ');
   var lines = nm.length > 10 && sp > 0 ? [nm.slice(0, sp), nm.slice(sp + 1)] : [nm];
   out += '<circle cx="' + cx + '" cy="' + cy + '" r="48" fill="' + n.barva + '"/>' + lines.map(function (t, k) {
-    return '<text x="' + cx + '" y="' + (cy + 5 + (k - (lines.length - 1) / 2) * 17) + '" text-anchor="middle" style="fill:#fdf8f0;font-weight:800;font-size:15px">' + esc(t) + '</text>';
+    return '<text x="' + cx + '" y="' + (cy + 5 + (k - (lines.length - 1) / 2) * 17) + '" text-anchor="middle" style="fill:#ffffff;font-weight:800;font-size:15px">' + esc(t) + '</text>';
   }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Oblasti využití ' + esc(n.nazev) + '">' + out + '</svg>';
 }
