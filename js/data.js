@@ -254,7 +254,7 @@ var NASTROJE = [
 }
 ];
 
-/* Projekt Ústeckého kraje – podle zpráv na kr-ustecky.cz (poslední ověření 13. 10. 2026) */
+/* Projekt Ústeckého kraje – podle zpráv na kr-ustecky.cz a opst.cz (poslední ověření 5. 11. 2026) */
 var PROJEKT = {
   cisla: [
     ['212 mil. Kč', 'celkové náklady projektu (až 85 % z OP Spravedlivá transformace)'],
@@ -270,11 +270,15 @@ var PROJEKT = {
     ['2.–3. 9. 2025', 'Školení pro základní školy', 'Jeden zástupce z každé ZŠ, ve spolupráci s Microsoftem.', 'hotovo'],
     ['15. 9. 2025', 'Start AI kabinetů na SŠ', 'Sedm předmětových kabinetů (ČJ, AJ, NJ, ZSV, M, Ch, F) vedených AI praktiky.', 'hotovo'],
     ['5. 5. 2026', 'Memorandum s partnerem Google (DPDC)', 'Google Workspace for Education pro krajské školy a proškolení všech škol přes Gemini Academy.', 'hotovo'],
-    ['8. 9. 2026', 'Zastupitelstvo schválilo projektový záměr', '„Zavádění nástrojů AI do výuky na středních školách Ústeckého kraje“ – až 212 mil. Kč.', 'nove'],
+    ['8. 9. 2026', 'Zastupitelstvo schválilo projektový záměr', '„Zavádění nástrojů AI do výuky na středních školách Ústeckého kraje“ – až 212 mil. Kč.', 'hotovo'],
+    ['30. 9. 2026', 'Vyhlášeny výzvy OP Spravedlivá transformace', 'Výzvy č. 117 a 118 pro AI ve středních školách: 180 mil. Kč pro Ústecký a 50 mil. Kč pro Karlovarský kraj. Žádosti lze podávat 14. 10. 2026 – 30. 4. 2027, realizace nejpozději do konce roku 2029.', 'nove'],
+    ['konec října 2026', 'Memorandum s Karlovarským krajem', 'Hejtmani R. Brabec a P. Kubis podepsali v Ústí nad Labem spolupráci při zavádění AI a VR do škol: sdílení zkušeností, metodická podpora učitelů, AI v administrativě. Karlovarský kraj chystá podobný projekt pro asi 20 středních škol.', 'nove'],
     ['listopad 2026', 'Podání žádosti do OP Spravedlivá transformace', 'Plánovaný termín podle kraje.', 'plan'],
     ['leden 2027 – červenec 2029', 'Realizace projektu', 'Licence, hybridní učebny, VR, AI kabinety, ambasadoři a praktici, vzdělávání učitelů.', 'plan']
   ],
   zdroje: [
+    ['Memorandum Ústeckého a Karlovarského kraje o AI ve školách (říjen 2026)', 'https://www.kr-ustecky.cz/hejtmani-karlovarskeho-a-usteckeho-kraje-podepsali-memorandum-o-spolupraci-pri-zavadeni-ai-do-skol'],
+    ['OP Spravedlivá transformace: výzvy pro AI ve středních školách (30. 9. 2026)', 'https://opst.cz/umela-inteligence-miri-do-strednich-skol-ustecky-a-karlovarsky-kraj-na-jeji-zavadeni-do-vyuky-vyuzije-230-milionu-korun/'],
     ['Ústecký kraj pokračuje v zavádění AI do středních škol (8. 9. 2026)', 'https://www.kr-ustecky.cz/ustecky-kraj-pokracuje-v-zavadeni-umele-inteligence-do-strednich-skol-navazuje-na-navrat-do-budoucnosti'],
     ['Memorandum se společností Google (5. 5. 2026)', 'https://www.kr-ustecky.cz/memorandum-se-spolecnosti-google-pomuze-skolam-s-umelou-inteligenci'],
     ['Zahájení činnosti AI kabinetů (15. 9. 2025)', 'https://www.kr-ustecky.cz/ustecky-kraj-zahajuje-cinnost-ai-kabinetu-na-strednich-skolach-jde-o-dalsi-krok-v-projektu-navrat-do-budoucnosti'],

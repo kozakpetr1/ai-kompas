@@ -143,7 +143,7 @@
     { klice: ['projekt', 'kraj', 'ambasador', 'praktik', 'kabinet', 'navrat do budoucnosti', 'spravedliv', 'memorand'],
       odp: function () {
         return { content: '**Projekt Ústeckého kraje – AI ve školách**\n\n' + PROJEKT.cisla.map(function (c) { return '- **' + c[0] + '** – ' + c[1]; }).join('\n') +
-          '\n\nPodání žádosti je plánované na listopad 2026, realizace leden 2027 – červenec 2029. Konkrétní produkt licencí kraj zatím nezveřejnil.\n\nVíc v sekci [Projekt kraje](#projekt).', navrhy: ['Co dělá AI ambasador?', 'Které nástroje jsou zdarma?'] };
+          '\n\nVýzva OP Spravedlivá transformace je vyhlášená od 30. 9. 2026 (pro Ústecký kraj 180 mil. Kč, žádosti do 30. 4. 2027). Podání žádosti kraj plánoval na listopad 2026, realizace leden 2027 – červenec 2029. Koncem října 2026 kraj podepsal memorandum o spolupráci s Karlovarským krajem. Konkrétní produkt licencí kraj zatím nezveřejnil.\n\nVíc v sekci [Projekt kraje](#projekt).', navrhy: ['Co dělá AI ambasador?', 'Které nástroje jsou zdarma?'] };
       } },
     { klice: ['jak funguje', 'jak ai funguje', 'token', 'neuron', 'jazykovy model', 'llm', 'trenov', 'uci model', 'vahy'],
       odp: { content: '**Jak AI funguje – ve zkratce**\n\nJazykový model je neuronová síť, která se na obrovském množství textů naučila odhadovat **další kousek textu (token)**. Odpověď skládá token po tokenu. Znalosti nemá uložené jako databázi – jsou rozprostřené ve **vahách** spojů sítě. Proto umí skvěle pracovat s jazykem, ale fakta si můžete splést – vzniká halucinace.\n\nInteraktivní ukázka tréninku je v sekci [Jak AI funguje](#princip).', navrhy: ['Co jsou halucinace?', 'Jak napsat dobrý prompt?'] } }
